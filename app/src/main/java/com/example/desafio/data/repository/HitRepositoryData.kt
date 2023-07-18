@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class HitRepositoryData @Inject constructor(
     private val remoteDataSource: HitRemoteDataSource,
-    private val hitsDao: HitsDao
+    private val hitsDao: HitsDao,
+    private val networkHandler: NetworkHandler
 ) : HitRepository {
     override suspend fun getHits(): Result<List<HitDomain>> {
         return remoteDataSource.getHits().onSuccess { hitsDomain ->
@@ -27,6 +28,15 @@ class HitRepositoryData @Inject constructor(
         val hitsUpdate = hitsDao.getAllIdHitsDeleted()
         val insertHits = hitsDomain.filterNot { item -> hitsUpdate.contains(item.id) }
         hitsDao.insert(insertHits.toListEntity())
+    }
+
+    override fun getHitsStream(): Flow<Result<List<HitDomain>>> {
+        return hitsDao.getHitsStream().map { entities ->
+            if (entities.isEmpty() && !networkHandler.isConnected()) {
+                return@map Result.failure<List<HitDomain>>(NetworkConnection())
+            }
+            return@map Result.success(entities.toListDomain())
+        }
     }
 
 }
