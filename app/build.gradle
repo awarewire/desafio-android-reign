@@ -81,6 +81,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesAndroidVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:$rootProject.datetimeKtxVersion")
 
+    implementation("androidx.room:room-runtime:$rootProject.roomVersion")
+    implementation("androidx.room:room-ktx:$rootProject.roomVersion")
+    kapt("androidx.room:room-compiler:$rootProject.roomVersion")
+
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
