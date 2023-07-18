@@ -1,9 +1,9 @@
 package com.example.desafio.data.datasource.remote
 
 import com.example.desafio.data.datasource.device.NetworkHandler
-import com.example.desafio.domain.commons.Cancelled
-import com.example.desafio.domain.commons.EmptyResponseBody
-import com.example.desafio.domain.commons.NetworkConnection
+import com.example.desafio.domain.commons.errors.Cancelled
+import com.example.desafio.domain.commons.errors.EmptyResponseBody
+import com.example.desafio.domain.commons.errors.NetworkConnection
 import com.example.desafio.domain.commons.ServerError
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

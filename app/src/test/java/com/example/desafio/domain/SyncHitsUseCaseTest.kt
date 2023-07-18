@@ -28,7 +28,7 @@ class SyncHitsUseCaseTest {
             val response = Result.success(hitDomains)
             whenever(mockHitRepository.getHits()).thenReturn(response)
 
-            val result = sutSyncHitsUseCase.run()
+            val result = sutSyncHitsUseCase.run(Unit)
 
             Assert.assertEquals(result.isSuccess, true)
             verify(mockHitRepository).getHits()
@@ -41,7 +41,7 @@ class SyncHitsUseCaseTest {
             val response = Result.failure<List<HitDomain>>(ServerError())
             whenever(mockHitRepository.getHits()).thenReturn(response)
 
-            val result = sutSyncHitsUseCase.run()
+            val result = sutSyncHitsUseCase.run(Unit)
 
             Assert.assertEquals(result.isFailure, true)
             verify(mockHitRepository).getHits()
