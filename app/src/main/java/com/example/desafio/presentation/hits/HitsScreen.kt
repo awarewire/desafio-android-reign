@@ -2,6 +2,7 @@
 
 package com.example.desafio.presentation.hits
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,17 +16,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.desafio.R
 import com.example.desafio.presentation.fake.FakeData
 import com.example.desafio.ui.theme.DesafioTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import timber.log.Timber
 
 @Composable
 fun HitsScreen(
     modifier: Modifier = Modifier,
-    viewModel: HitsViewModel = viewModel()
+    viewModel: HitsViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
     val uiState: MainStateUi by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.stateRefresh.collectAsState()
@@ -44,7 +49,10 @@ fun HitsScreen(
                     items(
                         items = (uiState as MainStateUi.DisplayHits).hist,
                         itemContent = { item ->
-                            ItemView(item)
+                            ItemView(item) {
+                                Timber.d("navigate kahjsdfkj")
+                                navController.navigate("details")
+                            }
                             Spacer(modifier = Modifier.size(4.dp))
                         })
                 }
@@ -90,7 +98,7 @@ fun ErrorView(viewModel: HitsViewModel) {
 }
 
 @Composable
-fun ItemView(item: HitStateUi) {
+fun ItemView(item: HitStateUi, onClick: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -98,6 +106,9 @@ fun ItemView(item: HitStateUi) {
             Modifier
                 .padding(5.dp)
                 .fillMaxWidth()
+                .clickable(enabled = true) {
+                    onClick()
+                },
         ) {
             Text(
                 modifier = Modifier.padding(5.dp),
@@ -120,6 +131,6 @@ fun ItemView(item: HitStateUi) {
 fun DefaultPreview() {
     DesafioTheme {
         //ErrorView(viewModel())
-        ItemView(item = FakeData.getFakeHitStateUi())
+        ItemView(item = FakeData.getFakeHitStateUi(), {})
     }
 }
