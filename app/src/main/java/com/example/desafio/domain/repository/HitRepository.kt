@@ -7,4 +7,6 @@ interface HitRepository {
     suspend fun getHits(): Result<List<HitDomain>>
 
     fun getHitsStream(): Flow<Result<List<HitDomain>>>
+
+    suspend fun deleteHit(id: String): Result<Unit>
 }

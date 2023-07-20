@@ -2,6 +2,7 @@ package com.example.desafio.presentation.hits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.desafio.domain.DeleteHitUseCase
 import com.example.desafio.domain.SubscribeHitsUseCase
 import com.example.desafio.domain.SyncHitsUseCase
 import com.example.desafio.domain.commons.DefaultUseCaseExecutor
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HitsViewModel @Inject constructor(
     private val subscribeHitsUseCase: SubscribeHitsUseCase,
-    private val syncHitsUseCase: SyncHitsUseCase
+    private val syncHitsUseCase: SyncHitsUseCase,
+    private val deleteHitUseCase: DeleteHitUseCase
 ) : ViewModel(), UseCaseExecutor by DefaultUseCaseExecutor() {
 
     private val _stateRefresh = MutableStateFlow(false)
@@ -44,5 +46,9 @@ class HitsViewModel @Inject constructor(
             _stateRefresh.value = false
             Timber.d("result: $it")
         }
+    }
+
+    fun removeItem(id: String) {
+        deleteHitUseCase(viewModelScope, id)
     }
 }

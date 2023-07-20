@@ -2,10 +2,14 @@
 
 package com.example.desafio.presentation.hits
 
+import DismissBackground
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,9 +27,8 @@ import com.example.desafio.presentation.fake.FakeData
 import com.example.desafio.ui.theme.DesafioTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HitsScreen(
     modifier: Modifier = Modifier,
@@ -46,17 +49,11 @@ fun HitsScreen(
                         .padding(5.dp)
                         .fillMaxWidth()
                 ) {
-                    items(
+                    itemsIndexed(
                         items = (uiState as MainStateUi.DisplayHits).hist,
-                        itemContent = { item ->
-                            ItemView(item) {
-                                val encodedUrl = URLEncoder.encode(
-                                    item.url,
-                                    StandardCharsets.UTF_8.toString()
-                                )
-                                navController.navigate("details?webpage=$encodedUrl")
-                            }
-                            Spacer(modifier = Modifier.size(4.dp))
+                        key = { _, item -> item.hashCode() },
+                        itemContent = { _, item ->
+                            NewsItem(item, navController) { viewModel.removeItem(item.id) }
                         })
                 }
             }
@@ -68,6 +65,39 @@ fun HitsScreen(
             ErrorView(viewModel)
         }
     }
+}
+
+@Composable
+fun NewsItem(item: HitStateUi, navController: NavHostController, removeItem: (id: String) -> Unit) {
+    var show by remember { mutableStateOf(true) }
+    val currentItem by rememberUpdatedState(item)
+    val dismissState = rememberDismissState(
+        confirmValueChange = {
+            if (it == DismissValue.DismissedToStart || it == DismissValue.DismissedToEnd) {
+                show = false
+                removeItem(currentItem.id)
+                true
+            } else false
+        }, positionalThreshold = { 150.dp.toPx() }
+    )
+    AnimatedVisibility(
+        show, exit = fadeOut(spring())
+    ) {
+        SwipeToDismiss(
+            directions = setOf(DismissDirection.StartToEnd),
+            state = dismissState,
+            modifier = Modifier,
+            background = {
+                DismissBackground(dismissState)
+            },
+            dismissContent = {
+                ItemView(item) {
+                    navController.navigate("details?webpage=${item.retrieveEncodedURL()}")
+                }
+            }
+        )
+    }
+    Spacer(modifier = Modifier.size(4.dp))
 }
 
 @Composable
