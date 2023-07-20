@@ -6,9 +6,9 @@ import javax.inject.Inject
 
 class SyncHitsUseCase @Inject constructor(
     private val repository: HitRepository
-) : UseCase<List<HitDomain>, Unit> {
+) : UseCase<Unit, Unit> {
 
-    override suspend fun run(params: Unit): Result<List<HitDomain>> {
-        return repository.getHits()
+    override suspend fun run(params: Unit): Result<Unit> {
+        return repository.getHits().map { Unit }
     }
 }

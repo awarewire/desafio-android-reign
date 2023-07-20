@@ -28,7 +28,7 @@ class HitsViewModel @Inject constructor(
         subscribeHits()
     }
 
-    private fun subscribeHits() {
+    fun subscribeHits() {
         subscribeHitsUseCase(viewModelScope, Unit) { either ->
             either.onSuccess { hitsDomain ->
                 _uiState.value = MainStateUi.DisplayHits(hitsDomain.toListStateUi())
