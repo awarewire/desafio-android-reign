@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.desafio.presentation.hits.HitsScreen
 import com.example.desafio.ui.theme.DesafioTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,8 +50,15 @@ fun NavGraph(navController: NavHostController) {
             HitsScreen(navController = navController)
         }
 
-        composable(route = "details") {
-            DetailsScreen(name = "Demo")
+        composable(route = "details?webpage={webpage}",
+            arguments = listOf(
+                navArgument("webpage") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val url = it.arguments?.getString("webpage") ?: ""
+            DetailsScreen(url = url)
         }
     }
 }

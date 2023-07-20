@@ -17,14 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.desafio.R
 import com.example.desafio.presentation.fake.FakeData
 import com.example.desafio.ui.theme.DesafioTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import timber.log.Timber
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun HitsScreen(
@@ -50,8 +50,11 @@ fun HitsScreen(
                         items = (uiState as MainStateUi.DisplayHits).hist,
                         itemContent = { item ->
                             ItemView(item) {
-                                Timber.d("navigate kahjsdfkj")
-                                navController.navigate("details")
+                                val encodedUrl = URLEncoder.encode(
+                                    item.url,
+                                    StandardCharsets.UTF_8.toString()
+                                )
+                                navController.navigate("details?webpage=$encodedUrl")
                             }
                             Spacer(modifier = Modifier.size(4.dp))
                         })
