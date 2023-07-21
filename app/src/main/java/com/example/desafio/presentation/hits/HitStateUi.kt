@@ -4,6 +4,8 @@ import android.os.Parcelable
 import android.text.format.DateUtils
 import com.example.desafio.domain.HitDomain
 import kotlinx.parcelize.Parcelize
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Parcelize
 data class HitStateUi(
@@ -15,6 +17,10 @@ data class HitStateUi(
 ) : Parcelable {
     fun retrieveAuthorAndDate(): String {
         return "$author - ${DateUtils.getRelativeTimeSpanString(dateCreated)}"
+    }
+
+    fun retrieveEncodedURL(): String {
+        return URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
     }
 }
 

@@ -14,6 +14,9 @@ interface HitsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entities: List<HitEntity>): List<Long>
 
+    @Query("UPDATE hits SET deleted = :deleted WHERE id = :id")
+    suspend fun updateStatus(id: String, deleted: Boolean = true)
+
     @Query(value = """SELECT * FROM hits WHERE deleted = :deleted ORDER BY dateCreated DESC;""")
     fun getHitsStream(deleted: Boolean = false): Flow<List<HitEntity>>
 

@@ -39,4 +39,9 @@ class HitRepositoryData @Inject constructor(
         }
     }
 
+    override suspend fun deleteHit(id: String): Result<Unit> {
+        hitsDao.updateStatus(id)
+        return Result.success(Unit)
+    }
+
 }
